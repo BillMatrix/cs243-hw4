@@ -1,4 +1,4 @@
-package hw2;
+package submit;
 
 // some useful things to import. add any additional imports you need.
 import joeq.Class.jq_Class;
