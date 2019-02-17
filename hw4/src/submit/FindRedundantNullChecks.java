@@ -3,6 +3,7 @@ package submit;
 import joeq.Main.Helper;
 import joeq.Class.*;
 import joeq.Compiler.Quad.*;
+import flow.Flow.*;
 
 public class FindRedundantNullChecks {
 
@@ -20,7 +21,6 @@ public class FindRedundantNullChecks {
         } catch (Exception ex) {
             System.out.println("ERROR: Could not load class '" + solver_name +
                 "' as Solver: " + ex.toString());
-            System.out.println(usage);
             return;
         }
 
@@ -32,7 +32,6 @@ public class FindRedundantNullChecks {
         } catch (Exception ex) {
             System.out.println("ERROR: Could not load class '" + analysis_name +
                 "' as Analysis: " + ex.toString());
-            System.out.println(usage);
             return;
         }
 
