@@ -28,7 +28,6 @@ public class FindRedundantNullChecks {
         solver.registerAnalysis(analysis);
 
         for (int i=0; i < classes.length; i++) {
-            System.out.println("Now analyzing " + classes[i].getName());
             Helper.runPass(classes[i], solver);
         }
     }

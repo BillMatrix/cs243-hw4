@@ -64,9 +64,6 @@ public class RedundantNull implements Flow.Analysis {
   private VarSet entry, exit;
 
   public void preprocess(ControlFlowGraph cfg) {
-      // this line must come first.
-      System.out.println("Method: "+cfg.getMethod().getName().toString());
-
       // get the amount of space we need to allocate for the in/out arrays.
       QuadIterator qit = new QuadIterator(cfg);
       int max = 0;
@@ -117,20 +114,19 @@ public class RedundantNull implements Flow.Analysis {
       exit = new VarSet();
 
       transferfn.val = new VarSet();
-
-      // Most of my initialization is above (computing the universal set)
-      System.out.println("Initialization completed.");
   }
 
   public void postprocess (ControlFlowGraph cfg) {
-      System.out.println("entry: " + entry.toString());
-      for (int i=0; i<in.length; i++) {
-          if (in[i] != null) {
-              System.out.println(i + " in:  " + in[i].toString());
-              System.out.println(i + " out: " + out[i].toString());
-          }
+      System.out.print(cfg.getMethod().getName().toString() + " ")
+      qit = new QuadIterator(cfg);
+      while (qit.hasNext()) {
+        Quad q = qit.next();
+        if (q.getOperator() instanceof Operator.NullCheck &&
+            in[q.getID()].isChecked(q.getUsedRegisters().iterator().next()) {
+              System.out.print(q.getID());
+        }
       }
-      System.out.println("exit: " + exit.toString());
+      System.out.println();
   }
 
   public boolean isForward () { return true; }
