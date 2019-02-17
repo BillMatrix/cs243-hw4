@@ -3,6 +3,7 @@ package submit;
 import java.util.*;
 import joeq.Compiler.Quad.*;
 import joeq.Compiler.Quad.Operand.RegisterOperand;
+import flow.Flow;
 
 public class RedundantNull implements Flow.Analysis {
 
