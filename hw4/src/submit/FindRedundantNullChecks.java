@@ -1,7 +1,8 @@
 package submit;
 
-import joeq.Class.jq_Class;
 import joeq.Main.Helper;
+import joeq.Class.*;
+import joeq.Compiler.Quad.*;
 
 public class FindRedundantNullChecks {
 
@@ -11,8 +12,37 @@ public class FindRedundantNullChecks {
      * for each function as described on the course webpage
      */
     public static void main(String[] args) {
-        // TODO: Add for loop to handle multiple class names
-        String class_name = args[0];
-        System.out.println(class_name);
+        String solver_name = 'submit.MySolver';
+        try {
+            Object solver_obj = Class.forName(solver_name).newInstance();
+            solver = (Solver) solver_obj;
+        } catch (Exception ex) {
+            System.out.println("ERROR: Could not load class '" + solver_name +
+                "' as Solver: " + ex.toString());
+            System.out.println(usage);
+            return;
+        }
+
+        String analysis_name = 'submit.RedundantNull';
+        try {
+            Object analysis_obj = Class.forName(analysis_name).newInstance();
+            analysis = (Analysis) analysis_obj;
+        } catch (Exception ex) {
+            System.out.println("ERROR: Could not load class '" + analysis_name +
+                "' as Analysis: " + ex.toString());
+            System.out.println(usage);
+            return;
+        }
+
+        jq_Class[] classes = new jq_Class[args.length];
+        for (int i=0; i < classes.length; i++)
+            classes[i] = (jq_Class)Helper.load(args[i]);
+
+        solver.registerAnalysis(analysis);
+
+        for (int i=0; i < classes.length; i++) {
+            System.out.println("Now analyzing " + classes[i].getName());
+            Helper.runPass(classes[i], solver);
+        }
     }
 }
