@@ -7,175 +7,191 @@ import flow.Flow;
 
 public class RedundantNull implements Flow.Analysis {
 
-    public static class VarSet implements Flow.DataflowObject {
-        private Set<String> set;
-        public static Set<String> universalSet;
-        public VarSet() { set = new TreeSet<String>(); }
+  public static class VarSet implements Flow.DataflowObject {
+      private Set<String> set;
+      public static Set<String> universalSet;
 
-        public void setToTop() { set = new TreeSet<String>(); }
-        public void setToBottom() { set = new TreeSet<String>(universalSet); }
+      public VarSet() { set = new TreeSet<String>(universalSet); }
 
-        public void meetWith(Flow.DataflowObject o)
-        {
-            VarSet a = (VarSet)o;
-            set.addAll(a.set);
-        }
+      public void setToTop() { set = new TreeSet<String>(universalSet); }
+      public void setToBottom() { set = new TreeSet<String>(); }
 
-        public void copy(Flow.DataflowObject o)
-        {
-            VarSet a = (VarSet) o;
-            set = new TreeSet<String>(a.set);
-        }
+      public void meetWith (Flow.DataflowObject o)
+      {
+          VarSet a = (VarSet)o;
+          set.retainAll(a.set);
+      }
+      public void copy (Flow.DataflowObject o)
+      {
+          VarSet a = (VarSet) o;
+          set = new TreeSet<String>(a.set);
+      }
+      @Override
+      public boolean equals(Object o)
+      {
+          if (o instanceof VarSet)
+          {
+              VarSet a = (VarSet) o;
+              return set.equals(a.set);
+          }
+          return false;
+      }
+      @Override
+      public int hashCode() {
+          return set.hashCode();
+      }
 
-        @Override
-        public boolean equals(Object o)
-        {
-            if (o instanceof VarSet)
-            {
-                VarSet a = (VarSet) o;
-                return set.equals(a.set);
-            }
-            return false;
-        }
-        @Override
-        public int hashCode() {
-            return set.hashCode();
-        }
-        @Override
-        public String toString()
-        {
-            return set.toString();
-        }
+      @Override
+      public String toString()
+      {
+          return set.toString();
+      }
 
-        public void genVar(String v) {set.add(v);}
-        public void killVar(String v) {set.remove(v);}
-    }
+      public void setChecked(String v) {
+          set.add(v);
+      }
 
-    private VarSet[] in, out;
-    private VarSet entry, exit;
+      public void setNotChecked(String v) {
+          set.remove(v);
+      }
 
-    public void preprocess(ControlFlowGraph cfg) {
-        System.out.println("Method: "+cfg.getMethod().getName().toString());
-        /* Generate initial conditions. */
-        QuadIterator qit = new QuadIterator(cfg);
-        int max = 0;
-        while (qit.hasNext()) {
-            int x = qit.next().getID();
-            if (x > max) max = x;
-        }
-        max += 1;
-        in = new VarSet[max];
-        out = new VarSet[max];
-        qit = new QuadIterator(cfg);
+      public boolean isChecked(String v) {
+          return set.contains(v);
+      }
+  }
 
-        Set<String> s = new TreeSet<String>();
-        VarSet.universalSet = s;
+  private VarSet[] in, out;
+  private VarSet entry, exit;
 
-        /* Arguments are always there. */
-        int numargs = cfg.getMethod().getParamTypes().length;
-        for (int i = 0; i < numargs; i++) {
-            s.add("R"+i);
-        }
+  public void preprocess(ControlFlowGraph cfg) {
+      // this line must come first.
+      System.out.println("Method: "+cfg.getMethod().getName().toString());
 
-        while (qit.hasNext()) {
-            Quad q = qit.next();
-            for (RegisterOperand def : q.getDefinedRegisters()) {
-                s.add(def.getRegister().toString());
-            }
-            for (RegisterOperand use : q.getUsedRegisters()) {
-                s.add(use.getRegister().toString());
-            }
-        }
+      // get the amount of space we need to allocate for the in/out arrays.
+      QuadIterator qit = new QuadIterator(cfg);
+      int max = 0;
+      while (qit.hasNext()) {
+          int id = qit.next().getID();
+          if (id > max)
+              max = id;
+      }
+      max += 1;
 
-        entry = new VarSet();
-        exit = new VarSet();
-        transferfn.val = new VarSet();
-        for (int i=0; i<in.length; i++) {
-            in[i] = new VarSet();
-            out[i] = new VarSet();
-        }
+      // Begin computing the universal set. This needs to be done before
+      // any VarSet objects are created.
+      Set<String> s = new TreeSet<String>();
+      VarSet.universalSet = s;
 
-        System.out.println("Initialization completed.");
-    }
+      /* Arguments are always there. */
+      int numargs = cfg.getMethod().getParamTypes().length;
+      for (int i = 0; i < numargs; i++) {
+          s.add("R"+i);
+      }
 
-    public void postprocess(ControlFlowGraph cfg) {
-        System.out.println("entry: "+entry.toString());
-        for (int i=1; i<in.length; i++) {
-            System.out.println(i+" in:  "+in[i].toString());
-            System.out.println(i+" out: "+out[i].toString());
-        }
-        System.out.println("exit: "+exit.toString());
-    }
+      qit = new QuadIterator(cfg);
+      while (qit.hasNext()) {
+          Quad q = qit.next();
+          for (RegisterOperand def : q.getDefinedRegisters()) {
+              s.add(def.getRegister().toString());
+          }
+          for (RegisterOperand use : q.getUsedRegisters()) {
+              s.add(use.getRegister().toString());
+          }
+      }
+      // End computing the universal set
 
-    /* Is this a forward dataflow analysis? */
-    public boolean isForward() { return false; }
+      // allocate the in and out arrays.
+      in = new VarSet[max];
+      out = new VarSet[max];
 
-    /* Routines for interacting with dataflow values. */
+      // initialize the contents of in and out.
+      qit = new QuadIterator(cfg);
+      while (qit.hasNext()) {
+          int id = qit.next().getID();
+          in[id] = new VarSet();
+          out[id] = new VarSet();
+      }
 
-    public Flow.DataflowObject getEntry()
-    {
-        Flow.DataflowObject result = newTempVar();
-        result.copy(entry);
-        return result;
-    }
-    public Flow.DataflowObject getExit()
-    {
-        Flow.DataflowObject result = newTempVar();
-        result.copy(exit);
-        return result;
-    }
-    public Flow.DataflowObject getIn(Quad q)
-    {
-        Flow.DataflowObject result = newTempVar();
-        result.copy(in[q.getID()]);
-        return result;
-    }
-    public Flow.DataflowObject getOut(Quad q)
-    {
-        Flow.DataflowObject result = newTempVar();
-        result.copy(out[q.getID()]);
-        return result;
-    }
-    public void setIn(Quad q, Flow.DataflowObject value)
-    {
-        in[q.getID()].copy(value);
-    }
-    public void setOut(Quad q, Flow.DataflowObject value)
-    {
-        out[q.getID()].copy(value);
-    }
-    public void setEntry(Flow.DataflowObject value)
-    {
-        entry.copy(value);
-    }
-    public void setExit(Flow.DataflowObject value)
-    {
-        exit.copy(value);
-    }
+      // initialize the entry and exit points.
+      entry = new VarSet();
+      exit = new VarSet();
 
-    public Flow.DataflowObject newTempVar() { return new VarSet(); }
+      transferfn.val = new VarSet();
 
-    /* Actually perform the transfer operation on the relevant
-     * quad. */
+      // Most of my initialization is above (computing the universal set)
+      System.out.println("Initialization completed.");
+  }
 
-    private TransferFunction transferfn = new TransferFunction ();
-    public void processQuad(Quad q) {
-        transferfn.val.copy(out[q.getID()]);
-        transferfn.visitQuad(q);
-        in[q.getID()].copy(transferfn.val);
-    }
+  public void postprocess (ControlFlowGraph cfg) {
+      System.out.println("entry: " + entry.toString());
+      for (int i=0; i<in.length; i++) {
+          if (in[i] != null) {
+              System.out.println(i + " in:  " + in[i].toString());
+              System.out.println(i + " out: " + out[i].toString());
+          }
+      }
+      System.out.println("exit: " + exit.toString());
+  }
 
-    /* The QuadVisitor that actually does the computation */
-    public static class TransferFunction extends QuadVisitor.EmptyVisitor {
-        VarSet val;
-        @Override
-        public void visitQuad(Quad q) {
-            for (RegisterOperand def : q.getDefinedRegisters()) {
-                val.killVar(def.getRegister().toString());
-            }
-            for (RegisterOperand use : q.getUsedRegisters()) {
-                val.genVar(use.getRegister().toString());
-            }
-        }
-    }
+  public boolean isForward () { return true; }
+  public Flow.DataflowObject getEntry()
+  {
+      Flow.DataflowObject result = newTempVar();
+      result.copy(entry);
+      return result;
+  }
+  public Flow.DataflowObject getExit()
+  {
+      Flow.DataflowObject result = newTempVar();
+      result.copy(exit);
+      return result;
+  }
+  public void setEntry(Flow.DataflowObject value)
+  {
+      entry.copy(value);
+  }
+  public void setExit(Flow.DataflowObject value)
+  {
+      exit.copy(value);
+  }
+  public Flow.DataflowObject getIn(Quad q)
+  {
+      Flow.DataflowObject result = newTempVar();
+      result.copy(in[q.getID()]);
+      return result;
+  }
+  public Flow.DataflowObject getOut(Quad q)
+  {
+      Flow.DataflowObject result = newTempVar();
+      result.copy(out[q.getID()]);
+      return result;
+  }
+  public void setIn(Quad q, Flow.DataflowObject value)
+  {
+      in[q.getID()].copy(value);
+  }
+  public void setOut(Quad q, Flow.DataflowObject value)
+  {
+      out[q.getID()].copy(value);
+  }
+  public Flow.DataflowObject newTempVar() { return new VarSet(); }
+
+  private TransferFunction transferfn = new TransferFunction ();
+  public void processQuad(Quad q) {
+      transferfn.val.copy(in[q.getID()]);
+      transferfn.visitQuad(q);
+      out[q.getID()].copy(transferfn.val);
+  }
+
+  public static class TransferFunction extends QuadVisitor.EmptyVisitor {
+      VarSet val;
+      @Override
+      public void visitQuad(Quad q) {
+          if (q.getOperator() instanceof Operator.NullCheck) {
+              RegisterOperand used = q.getUsedRegisters().iterator().next();
+              // Make the defined register faint
+              val.setChecked(def.getRegister().toString());
+          }
+      }
+  }
 }
