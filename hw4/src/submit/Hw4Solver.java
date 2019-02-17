@@ -10,7 +10,7 @@ import joeq.Compiler.Quad.Operand.*;
 /**
  * Skeleton class for implementing the Flow.Solver interface.
  */
-public class MySolver implements Flow.Solver {
+public class Hw4Solver implements Flow.Solver {
 
     protected Flow.Analysis analysis;
 
@@ -20,7 +20,7 @@ public class MySolver implements Flow.Solver {
      *
      * @param analyzer The analysis to run
      */
-    public void registerAnalysis(Flow.Analysis analyzer) 
+    public void registerAnalysis(Flow.Analysis analyzer)
     {
         this.analysis = analyzer;
     }

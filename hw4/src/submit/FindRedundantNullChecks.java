@@ -13,7 +13,7 @@ public class FindRedundantNullChecks {
      * for each function as described on the course webpage
      */
     public static void main(String[] args) {
-        String solver_name = "submit.MySolver";
+        String solver_name = "submit.Hw4Solver";
         Solver solver;
         try {
             Object solver_obj = Class.forName(solver_name).newInstance();
