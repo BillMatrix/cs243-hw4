@@ -190,7 +190,7 @@ public class RedundantNull implements Flow.Analysis {
           if (q.getOperator() instanceof Operator.NullCheck) {
               RegisterOperand used = q.getUsedRegisters().iterator().next();
               // Make the defined register faint
-              val.setChecked(def.getRegister().toString());
+              val.setChecked(used.getRegister().toString());
           }
       }
   }
