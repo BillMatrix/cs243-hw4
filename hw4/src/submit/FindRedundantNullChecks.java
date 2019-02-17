@@ -11,6 +11,8 @@ public class FindRedundantNullChecks {
      * for each function as described on the course webpage
      */
     public static void main(String[] args) {
-        //fill me in
+        // TODO: Add for loop to handle multiple class names
+        String class_name = args[0];
+        System.out.println(class_name);
     }
 }
