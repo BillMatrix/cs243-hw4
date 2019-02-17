@@ -13,6 +13,7 @@ public class FindRedundantNullChecks {
      */
     public static void main(String[] args) {
         String solver_name = "submit.MySolver";
+        Solver solver;
         try {
             Object solver_obj = Class.forName(solver_name).newInstance();
             solver = (Solver) solver_obj;
@@ -24,6 +25,7 @@ public class FindRedundantNullChecks {
         }
 
         String analysis_name = "submit.RedundantNull";
+        Analysis analysis;
         try {
             Object analysis_obj = Class.forName(analysis_name).newInstance();
             analysis = (Analysis) analysis_obj;
