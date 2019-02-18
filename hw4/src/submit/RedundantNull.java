@@ -62,6 +62,7 @@ public class RedundantNull implements Flow.Analysis {
 
   private VarSet[] in, out;
   private VarSet entry, exit;
+  private Boolean disablePrint;
 
   public void preprocess(ControlFlowGraph cfg) {
       // get the amount of space we need to allocate for the in/out arrays.
@@ -118,7 +119,9 @@ public class RedundantNull implements Flow.Analysis {
   }
 
   public void postprocess (ControlFlowGraph cfg) {
-      System.out.print(cfg.getMethod().getName().toString() + " ");
+      if (!disablePrint) {
+        System.out.print(cfg.getMethod().getName().toString() + " ");
+      }
       QuadIterator qit = new QuadIterator(cfg);
       ArrayList<Integer> qidList = new ArrayList<Integer>();
       while (qit.hasNext()) {
@@ -126,14 +129,21 @@ public class RedundantNull implements Flow.Analysis {
         if ((q.getOperator() instanceof Operator.NullCheck) &&
             in[q.getID()].isChecked(q.getUsedRegisters().iterator().next().getRegister().toString())) {
               qidList.add(q.getID());
+              qit.remove();
         }
       }
-      Collections.sort(qidList);
-      for (Integer qid : qidList) {
-        System.out.print(qid);
-        System.out.print(" ");
+      if (!disablePrint) {
+        Collections.sort(qidList);
+        for (Integer qid : qidList) {
+          System.out.print(qid);
+          System.out.print(" ");
+        }
+        System.out.println();
       }
-      System.out.println();
+  }
+
+  public void disablePrint() {
+    disablePrint = true;
   }
 
   public boolean isForward () { return true; }

@@ -12,7 +12,18 @@ public class Optimize {
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));
-            // Run your optimization on each classes.
+
+            Hw4Solver solver = new Hw4Solver();
+
+            RedundantNull analysis = new RedundantNull();
+
+            analysis.disablePrint();
+
+            solver.registerAnalysis(analysis);
+
+            for (int i=0; i < classes.length; i++) {
+                Helper.runPass(Helper.load(classes[i]), solver);
+            }
         }
     }
 }
