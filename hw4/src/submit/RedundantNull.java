@@ -197,7 +197,7 @@ public class RedundantNull implements Flow.Analysis {
               RegisterOperand used = q.getUsedRegisters().iterator().next();
               val.setChecked(used.getRegister().toString());
               RegisterOperand def = q.getDefinedRegisters().iterator().next();
-              val.setNotChecked(used.getDefinedRegisters().toString());
+              val.setNotChecked(def.getRegisters().toString());
           }
       }
   }
