@@ -119,7 +119,7 @@ public class RedundantNull implements Flow.Analysis {
   }
 
   public void postprocess (ControlFlowGraph cfg) {
-      if (!disablePrint) {
+      if (!enableOptimization) {
         System.out.print(cfg.getMethod().getName().toString() + " ");
       }
       QuadIterator qit = new QuadIterator(cfg);
