@@ -118,23 +118,20 @@ public class RedundantNull implements Flow.Analysis {
   }
 
   public void postprocess (ControlFlowGraph cfg) {
-    // System.out.println("entry: " + entry.toString());
-    // for (int i=0; i<in.length; i++) {
-    //     if (in[i] != null) {
-    //         System.out.println(i + " in:  " + in[i].toString());
-    //         System.out.println(i + " out: " + out[i].toString());
-    //     }
-    // }
-    // System.out.println("exit: " + exit.toString());
       System.out.print(cfg.getMethod().getName().toString() + " ");
       QuadIterator qit = new QuadIterator(cfg);
+      ArrayList<Integer> qidList = new ArrayList<Integer>();
       while (qit.hasNext()) {
         Quad q = qit.next();
         if ((q.getOperator() instanceof Operator.NullCheck) &&
             in[q.getID()].isChecked(q.getUsedRegisters().iterator().next().getRegister().toString())) {
-              System.out.print(q.getID());
-              System.out.print(" ");
+              qidList.add(q.getID());
         }
+      }
+      Collections.sort(qidList);
+      for (Integer qid : qidList) {
+        System.out.print(qid);
+        System.out.print(" ");
       }
       System.out.println();
   }
