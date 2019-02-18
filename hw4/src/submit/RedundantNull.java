@@ -88,9 +88,6 @@ public class RedundantNull implements Flow.Analysis {
       qit = new QuadIterator(cfg);
       while (qit.hasNext()) {
           Quad q = qit.next();
-          for (RegisterOperand def : q.getDefinedRegisters()) {
-              s.add(def.getRegister().toString());
-          }
           for (RegisterOperand use : q.getUsedRegisters()) {
               s.add(use.getRegister().toString());
           }
