@@ -11,7 +11,7 @@ public class RedundantNull implements Flow.Analysis {
       private Set<String> set;
       public static Set<String> universalSet;
 
-      public VarSet() { set = new TreeSet<String>(universalSet); }
+      public VarSet() { set = new TreeSet<String>(); }
 
       public void setToTop() { set = new TreeSet<String>(universalSet); }
       public void setToBottom() { set = new TreeSet<String>(); }
