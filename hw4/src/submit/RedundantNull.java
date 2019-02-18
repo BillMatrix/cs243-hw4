@@ -89,7 +89,9 @@ public class RedundantNull implements Flow.Analysis {
       while (qit.hasNext()) {
           Quad q = qit.next();
           for (RegisterOperand use : q.getUsedRegisters()) {
-              s.add(use.getRegister().toString());
+              if ((q.getOperator() instanceof Operator.NullCheck) {
+                  s.add(use.getRegister().toString());
+              }
           }
       }
       // End computing the universal set
@@ -104,7 +106,6 @@ public class RedundantNull implements Flow.Analysis {
           int id = qit.next().getID();
           in[id] = new VarSet();
           out[id] = new VarSet();
-          out[id].setToBottom();
       }
 
       // initialize the entry and exit points.
@@ -185,7 +186,6 @@ public class RedundantNull implements Flow.Analysis {
       public void visitQuad(Quad q) {
           if (q.getOperator() instanceof Operator.NullCheck) {
               RegisterOperand used = q.getUsedRegisters().iterator().next();
-              // Make the defined register faint
               val.setChecked(used.getRegister().toString());
           }
       }
