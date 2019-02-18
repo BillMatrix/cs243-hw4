@@ -108,6 +108,7 @@ public class RedundantNull implements Flow.Analysis {
 
       // initialize the entry and exit points.
       entry = new VarSet();
+      entry.setToBottom();
       exit = new VarSet();
 
       transferfn.val = new VarSet();
