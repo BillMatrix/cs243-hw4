@@ -62,7 +62,7 @@ public class RedundantNull implements Flow.Analysis {
 
   private VarSet[] in, out;
   private VarSet entry, exit;
-  private Boolean disablePrint;
+  private Boolean enableOptimization;
 
   public void preprocess(ControlFlowGraph cfg) {
       // get the amount of space we need to allocate for the in/out arrays.
@@ -129,10 +129,12 @@ public class RedundantNull implements Flow.Analysis {
         if ((q.getOperator() instanceof Operator.NullCheck) &&
             in[q.getID()].isChecked(q.getUsedRegisters().iterator().next().getRegister().toString())) {
               qidList.add(q.getID());
-              qit.remove();
+              if (enableOptimization) {
+                  qit.remove();
+              }
         }
       }
-      if (!disablePrint) {
+      if (!enableOptimization) {
         Collections.sort(qidList);
         for (Integer qid : qidList) {
           System.out.print(qid);
@@ -142,8 +144,8 @@ public class RedundantNull implements Flow.Analysis {
       }
   }
 
-  public void disablePrint() {
-    disablePrint = true;
+  public void enableOptimization() {
+    enableOptimization = true;
   }
 
   public boolean isForward () { return true; }

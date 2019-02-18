@@ -17,7 +17,7 @@ public class Optimize {
 
             RedundantNull analysis = new RedundantNull();
 
-            analysis.disablePrint();
+            analysis.enableOptimization();
 
             solver.registerAnalysis(analysis);
 
