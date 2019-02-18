@@ -21,7 +21,7 @@ public class Optimize {
 
             solver.registerAnalysis(analysis);
 
-            Helper.runPass(Helper.load(classes), solver);
+            Helper.runPass(classes, solver);
         }
     }
 }
