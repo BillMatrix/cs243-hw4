@@ -124,6 +124,7 @@ public class RedundantNull implements Flow.Analysis {
         if ((q.getOperator() instanceof Operator.NullCheck) &&
             in[q.getID()].isChecked(q.getUsedRegisters().iterator().next().getRegister().toString())) {
               System.out.print(q.getID());
+              System.out.print(" ");
         }
       }
       System.out.println();
