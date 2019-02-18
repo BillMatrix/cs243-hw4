@@ -105,13 +105,12 @@ public class RedundantNull implements Flow.Analysis {
       while (qit.hasNext()) {
           int id = qit.next().getID();
           in[id] = new VarSet();
-          in[id].setToTop();
           out[id] = new VarSet();
+          out[id].setToTop();
       }
 
       // initialize the entry and exit points.
       entry = new VarSet();
-      entry.setToBottom();
       exit = new VarSet();
 
       transferfn.val = new VarSet();
