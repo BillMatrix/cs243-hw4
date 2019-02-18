@@ -21,9 +21,7 @@ public class Optimize {
 
             solver.registerAnalysis(analysis);
 
-            for (int i=0; i < classes.length; i++) {
-                Helper.runPass(Helper.load(classes[i]), solver);
-            }
+            Helper.runPass(Helper.load(classes), solver);
         }
     }
 }
