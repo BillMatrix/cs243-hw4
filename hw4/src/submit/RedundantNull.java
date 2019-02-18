@@ -122,7 +122,7 @@ public class RedundantNull implements Flow.Analysis {
       while (qit.hasNext()) {
         Quad q = qit.next();
         if ((q.getOperator() instanceof Operator.NullCheck) &&
-            in[q.getID()].isChecked(q.getUsedRegisters().iterator().next())) {
+            in[q.getID()].isChecked(q.getUsedRegisters().iterator().next().getRegister().toString())) {
               System.out.print(q.getID());
         }
       }
