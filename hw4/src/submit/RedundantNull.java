@@ -117,7 +117,7 @@ public class RedundantNull implements Flow.Analysis {
   }
 
   public void postprocess (ControlFlowGraph cfg) {
-      System.out.print(cfg.getMethod().getName().toString() + " ")
+      System.out.print(cfg.getMethod().getName().toString() + " ");
       QuadIterator qit = new QuadIterator(cfg);
       while (qit.hasNext()) {
         Quad q = qit.next();
