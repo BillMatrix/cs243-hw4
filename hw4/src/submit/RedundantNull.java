@@ -11,7 +11,7 @@ public class RedundantNull implements Flow.Analysis {
       private Set<String> set;
       public static Set<String> universalSet;
 
-      public VarSet() { set = new TreeSet<String>(); }
+      public VarSet() { set = new TreeSet<String>(universalSet); }
 
       public void setToTop() { set = new TreeSet<String>(universalSet); }
       public void setToBottom() { set = new TreeSet<String>(); }
@@ -106,11 +106,12 @@ public class RedundantNull implements Flow.Analysis {
           int id = qit.next().getID();
           in[id] = new VarSet();
           out[id] = new VarSet();
-          out[id].setToTop();
+          in[id].setToBottom();
       }
 
       // initialize the entry and exit points.
       entry = new VarSet();
+      entry.setToBottom();
       exit = new VarSet();
 
       transferfn.val = new VarSet();
