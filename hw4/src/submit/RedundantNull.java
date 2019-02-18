@@ -65,6 +65,7 @@ public class RedundantNull implements Flow.Analysis {
   private Boolean enableOptimization;
 
   public void preprocess(ControlFlowGraph cfg) {
+      enableOptimization = false;
       // get the amount of space we need to allocate for the in/out arrays.
       QuadIterator qit = new QuadIterator(cfg);
       int max = 0;
