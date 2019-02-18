@@ -15,10 +15,8 @@ public class FindRedundantNullChecks {
      * for each function as described on the course webpage
      */
     public static void main(String[] args) {
-        String solver_name = "submit.MySolver";
         Hw4Solver solver = new Hw4Solver();
 
-        String analysis_name = "submit.RedundantNull";
         RedundantNull analysis = new RedundantNull();
 
         jq_Class[] classes = new jq_Class[args.length];
