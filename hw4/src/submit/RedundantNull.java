@@ -77,7 +77,6 @@ public class RedundantNull implements Flow.Analysis {
       // Begin computing the universal set. This needs to be done before
       // any VarSet objects are created.
       Set<String> s = new TreeSet<String>();
-      VarSet.universalSet = s;
 
       /* Arguments are always there. */
       int numargs = cfg.getMethod().getParamTypes().length;
@@ -94,6 +93,7 @@ public class RedundantNull implements Flow.Analysis {
               }
           }
       }
+      VarSet.universalSet = s;
       // End computing the universal set
 
       // allocate the in and out arrays.
@@ -105,7 +105,6 @@ public class RedundantNull implements Flow.Analysis {
       while (qit.hasNext()) {
           int id = qit.next().getID();
           in[id] = new VarSet();
-          in[id].setToTop();
           out[id] = new VarSet();
           out[id].setToTop();
       }
