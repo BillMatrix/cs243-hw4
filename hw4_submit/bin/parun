@@ -1,0 +1,1 @@
+java -cp /afs/.ir/users/h/a/haozewu/cs243/hw4/lib/parun.jar:/afs/.ir/users/h/a/haozewu/cs243/hw4/lib/joeq.jar $@

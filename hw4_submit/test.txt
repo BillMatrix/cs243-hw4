@@ -1,0 +1,29 @@
+Now analyzing test.NullTest
+Method: getInteger
+Initialization completed.
+getInteger 7 
+
+Method: Test1
+Initialization completed.
+Test1 5 9 16 20 24 26 28 
+
+Method: Test2
+Initialization completed.
+Test2 3 5 8 15 18 20 29 31 
+
+Method: getInteger
+Initialization completed.
+getInteger 8 
+
+Method: Test3
+Initialization completed.
+Test3 4 9 15 23 32 35 39 40 44 55 
+
+Method: main
+Initialization completed.
+main 5 12 19 
+
+Method: <init>
+Initialization completed.
+<init> 2 
+
