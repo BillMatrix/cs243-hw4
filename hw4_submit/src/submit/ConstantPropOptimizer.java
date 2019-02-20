@@ -295,6 +295,16 @@ public class ConstantPropOptimizer implements Flow.Analysis {
            }
          }
        }
+       qit = new QuadIterator(cfg);
+       while (qit.hasNext()) {
+         Quad q = qit.next();
+         if (q.getOperator() instanceof Operator.NullCheck) {
+           Operator.NullCheck nullCheckOp = (Operator.NullCheck) q.getOperator();
+           if (nullCheckOp.getSrc(q) instanceof IConstOperand) {
+             qit.remove();
+           }
+         }
+       }
     }
 
     /* Is this a forward dataflow analysis? */

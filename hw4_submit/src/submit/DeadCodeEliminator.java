@@ -15,22 +15,22 @@ public class DeadCodeEliminator implements Flow.Analysis {
         public void setToTop() { set = new TreeSet<String>(); }
         public void setToBottom() { set = new TreeSet<String>(universalSet); }
 
-        public void meetWith(Flow.DataflowObject o) 
+        public void meetWith(Flow.DataflowObject o)
         {
             VarSet a = (VarSet)o;
             set.addAll(a.set);
         }
 
-        public void copy(Flow.DataflowObject o) 
+        public void copy(Flow.DataflowObject o)
         {
             VarSet a = (VarSet) o;
             set = new TreeSet<String>(a.set);
         }
 
         @Override
-        public boolean equals(Object o) 
+        public boolean equals(Object o)
         {
-            if (o instanceof VarSet) 
+            if (o instanceof VarSet)
             {
                 VarSet a = (VarSet) o;
                 return set.equals(a.set);
@@ -42,7 +42,7 @@ public class DeadCodeEliminator implements Flow.Analysis {
             return set.hashCode();
         }
         @Override
-        public String toString() 
+        public String toString()
         {
             return set.toString();
         }
@@ -97,21 +97,21 @@ public class DeadCodeEliminator implements Flow.Analysis {
     }
 
     public void postprocess(ControlFlowGraph cfg) {
-	QuadIterator qit = new QuadIterator(cfg);
-	while (qit.hasNext()){
-	    Quad q = qit.next();
-	    boolean dead = true;
-	    boolean hasDefined = false;
-	    for (RegisterOperand def : q.getDefinedRegisters()){
-		hasDefined = true;
-		if (out[q.getID()].contains(def.getRegister().toString())){
-		    dead = false;
-		}
-	    }
-	    if (dead && hasDefined){
-		qit.remove();
-	    }
-	}
+    	QuadIterator qit = new QuadIterator(cfg);
+    	while (qit.hasNext()){
+    	    Quad q = qit.next();
+    	    boolean dead = true;
+    	    boolean hasDefined = false;
+    	    for (RegisterOperand def : q.getDefinedRegisters()){
+        		hasDefined = true;
+        		if (out[q.getID()].contains(def.getRegister().toString())){
+        		    dead = false;
+        		}
+    	    }
+    	    if (dead && hasDefined){
+        		qit.remove();
+    	    }
+    	}
     }
 
     /* Is this a forward dataflow analysis? */
@@ -119,45 +119,45 @@ public class DeadCodeEliminator implements Flow.Analysis {
 
     /* Routines for interacting with dataflow values. */
 
-    public Flow.DataflowObject getEntry() 
-    { 
-        Flow.DataflowObject result = newTempVar();
-        result.copy(entry); 
-        return result;
-    }
-    public Flow.DataflowObject getExit() 
-    { 
-        Flow.DataflowObject result = newTempVar();
-        result.copy(exit); 
-        return result;
-    }
-    public Flow.DataflowObject getIn(Quad q) 
+    public Flow.DataflowObject getEntry()
     {
         Flow.DataflowObject result = newTempVar();
-        result.copy(in[q.getID()]); 
+        result.copy(entry);
         return result;
     }
-    public Flow.DataflowObject getOut(Quad q) 
+    public Flow.DataflowObject getExit()
     {
         Flow.DataflowObject result = newTempVar();
-        result.copy(out[q.getID()]); 
+        result.copy(exit);
         return result;
     }
-    public void setIn(Quad q, Flow.DataflowObject value) 
-    { 
-        in[q.getID()].copy(value); 
+    public Flow.DataflowObject getIn(Quad q)
+    {
+        Flow.DataflowObject result = newTempVar();
+        result.copy(in[q.getID()]);
+        return result;
     }
-    public void setOut(Quad q, Flow.DataflowObject value) 
-    { 
-        out[q.getID()].copy(value); 
+    public Flow.DataflowObject getOut(Quad q)
+    {
+        Flow.DataflowObject result = newTempVar();
+        result.copy(out[q.getID()]);
+        return result;
     }
-    public void setEntry(Flow.DataflowObject value) 
-    { 
-        entry.copy(value); 
+    public void setIn(Quad q, Flow.DataflowObject value)
+    {
+        in[q.getID()].copy(value);
     }
-    public void setExit(Flow.DataflowObject value) 
-    { 
-        exit.copy(value); 
+    public void setOut(Quad q, Flow.DataflowObject value)
+    {
+        out[q.getID()].copy(value);
+    }
+    public void setEntry(Flow.DataflowObject value)
+    {
+        entry.copy(value);
+    }
+    public void setExit(Flow.DataflowObject value)
+    {
+        exit.copy(value);
     }
 
     public Flow.DataflowObject newTempVar() { return new VarSet(); }
