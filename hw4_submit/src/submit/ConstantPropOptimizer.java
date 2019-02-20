@@ -215,17 +215,6 @@ public class ConstantPropOptimizer implements Flow.Analysis {
          Quad q = qit.next();
          Integer qid = q.getID();
          Operator operator = q.getOperator();
-	 Boolean hasConst = false;
-	 for (SingleCP cp: in[qid].map.values()) {
-	    if (cp.isConst()) {
-		hasConst = true;
-		break;
-	    }
-	 }
-	 if (hasConst) {
-	    System.out.println(q);
- 	    System.out.println(in[qid]);
-	 }
          if (operator instanceof Operator.Binary) {
            Operator.Binary op = (Operator.Binary) operator;
            if (op.getSrc1(q) instanceof RegisterOperand) {

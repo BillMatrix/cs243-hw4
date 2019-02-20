@@ -24,9 +24,9 @@ public class Optimize {
             		solver.registerAnalysis(analysis);
             		Helper.runPass(classes, solver);
     	      } else {
-          		  Analysis analysis_op = new NullCheckOptimizedOptimizer();
-          		  solver.registerAnalysis(analysis_op);
-          		  Helper.runPass(classes, solver);
+          		  // Analysis analysis_op = new NullCheckOptimizedOptimizer();
+          		  // solver.registerAnalysis(analysis_op);
+          		  // Helper.runPass(classes, solver)
           		  Analysis analysis_cp = new ConstantPropOptimizer();
           		  solver.registerAnalysis(analysis_cp);
           		  Helper.runPass(classes, solver);
@@ -34,7 +34,9 @@ public class Optimize {
           		  Analysis analysis_dc = new DeadCodeEliminator();
           		  solver.registerAnalysis(analysis_dc);
           		  Helper.runPass(classes, solver);
-          		  //}
+			  Analysis analysis_op = new NullCheckOptimizedOptimizer();
+			  solver.registerAnalysis(analysis_op);
+			  Helper.runPass(classes, solver);
     	      }
 	}
    }
