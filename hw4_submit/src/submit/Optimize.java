@@ -14,25 +14,23 @@ public class Optimize {
     public static void optimize(List<String> optimizeFiles, boolean nullCheckOnly) {
         for (int i = 0; i < optimizeFiles.size(); i++) {
             jq_Class classes = (jq_Class)Helper.load(optimizeFiles.get(i));
-	
-	    Solver solver;
-	    Object solver_obj = new MySolver4();
-	    solver = (Solver) solver_obj;
-	    
-	    if (nullCheckOnly){
-		Analysis analysis = new NullCheckOptimizer();
-		solver.registerAnalysis(analysis);
-		Helper.runPass(classes, solver);
-	    }
-	    else {
-		Analysis analysis_op = new NullCheckOptimizedOptimizer();
-		solver.registerAnalysis(analysis_op);
-		Helper.runPass(classes, solver);
-		//Analysis analysis_cp = new ConstantPropOptimizer();
-		//solver.registerAnalysis(analysis_cp);
-		//Helper.runPass(classes, solver);
-		
-	    }
-	}
-    }
+
+      	    Solver solver;
+      	    Object solver_obj = new MySolver4();
+      	    solver = (Solver) solver_obj;
+
+    	      if (nullCheckOnly){
+            		Analysis analysis = new NullCheckOptimizer();
+            		solver.registerAnalysis(analysis);
+            		Helper.runPass(classes, solver);
+    	      } else {
+            		Analysis analysis_op = new NullCheckOptimizedOptimizer();
+            		solver.registerAnalysis(analysis_op);
+            		Helper.runPass(classes, solver);
+            		Analysis analysis_cp = new ConstantPropOptimizer();
+            		solver.registerAnalysis(analysis_cp);
+            		Helper.runPass(classes, solver);
+    	      }
+	     }
+   }
 }

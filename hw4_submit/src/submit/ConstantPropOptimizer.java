@@ -19,7 +19,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
 
         public void meetWith (Flow.DataflowObject o) {
             SingleCP a = (SingleCP)o;
-            if (a.state == 0) 
+            if (a.state == 0)
                 return;
             if (state == 0) {
                 state = a.state;
@@ -71,7 +71,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
         }
 
         public void setUndef() { state = 0; }
-        public void setConst(int val) { 
+        public void setConst(int val) {
             state = 1; constant = val;
         }
         public void setNAC() { state = 2; }
@@ -117,7 +117,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
             for (Map.Entry<String, SingleCP> e : a.map.entrySet()) {
                 SingleCP mine = map.get(e.getKey());
                 mine.meetWith(e.getValue());
-            }		
+            }
         }
 
         public void copy (Flow.DataflowObject o) {
@@ -125,7 +125,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
             for (Map.Entry<String, SingleCP> e : a.map.entrySet()) {
                 SingleCP mine = map.get(e.getKey());
                 mine.copy(e.getValue());
-            }		
+            }
         }
 
         @Override
@@ -210,7 +210,17 @@ public class ConstantPropOptimizer implements Flow.Analysis {
     }
 
     public void postprocess (ControlFlowGraph cfg) {
-	
+	     QuadIterator qit = new QuadIterator(cfg);
+       while (qit.hasNext()) {
+         Quad q = qit.next();
+         if (q.getOperator() instanceof NullCheck) {
+           Integer qid = q.getID();
+           RegisterOperand reg = q.getUsedRegisters().iterator().next();
+           if (in[qid].get(reg.getRegister().toString()).isConst()) {
+             qit.remove();
+           }
+         }
+       }
     }
 
     /* Is this a forward dataflow analysis? */
@@ -218,37 +228,37 @@ public class ConstantPropOptimizer implements Flow.Analysis {
 
     /* Routines for interacting with dataflow values. */
 
-    public Flow.DataflowObject getEntry() { 
+    public Flow.DataflowObject getEntry() {
         Flow.DataflowObject result = newTempVar();
-        result.copy(entry); 
+        result.copy(entry);
         return result;
     }
-    public Flow.DataflowObject getExit() { 
+    public Flow.DataflowObject getExit() {
         Flow.DataflowObject result = newTempVar();
-        result.copy(exit); 
+        result.copy(exit);
         return result;
     }
-    public Flow.DataflowObject getIn(Quad q) { 
+    public Flow.DataflowObject getIn(Quad q) {
         Flow.DataflowObject result = newTempVar();
-        result.copy(in[q.getID()]); 
+        result.copy(in[q.getID()]);
         return result;
     }
-    public Flow.DataflowObject getOut(Quad q) { 
+    public Flow.DataflowObject getOut(Quad q) {
         Flow.DataflowObject result = newTempVar();
-        result.copy(out[q.getID()]); 
+        result.copy(out[q.getID()]);
         return result;
     }
-    public void setIn(Quad q, Flow.DataflowObject value) { 
-        in[q.getID()].copy(value); 
+    public void setIn(Quad q, Flow.DataflowObject value) {
+        in[q.getID()].copy(value);
     }
-    public void setOut(Quad q, Flow.DataflowObject value) { 
-        out[q.getID()].copy(value); 
+    public void setOut(Quad q, Flow.DataflowObject value) {
+        out[q.getID()].copy(value);
     }
-    public void setEntry(Flow.DataflowObject value) { 
-        entry.copy(value); 
+    public void setEntry(Flow.DataflowObject value) {
+        entry.copy(value);
     }
-    public void setExit(Flow.DataflowObject value) { 
-        exit.copy(value); 
+    public void setExit(Flow.DataflowObject value) {
+        exit.copy(value);
     }
 
     public Flow.DataflowObject newTempVar() { return new ConstantPropTable(); }
@@ -382,18 +392,18 @@ public class ConstantPropOptimizer implements Flow.Analysis {
         }
 
         private boolean isUndef (Operand op) {
-            return (op instanceof RegisterOperand && 
+            return (op instanceof RegisterOperand &&
                     val.get(((RegisterOperand)op).getRegister().toString()).isUndef());
         }
 
         private boolean isConst (Operand op) {
-            return (op instanceof IConstOperand) || 
-            (op instanceof RegisterOperand && 
+            return (op instanceof IConstOperand) ||
+            (op instanceof RegisterOperand &&
                     val.get(((RegisterOperand)op).getRegister().toString()).isConst());
         }
 
         private boolean isNAC (Operand op) {
-            return (op instanceof RegisterOperand && 
+            return (op instanceof RegisterOperand &&
                     val.get(((RegisterOperand)op).getRegister().toString()).isNAC());
         }
 
