@@ -293,6 +293,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
                op.setSrc(q, constOp);
              }
            }
+         }
        }
     }
 
