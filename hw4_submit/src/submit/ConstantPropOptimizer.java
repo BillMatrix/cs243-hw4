@@ -244,6 +244,25 @@ public class ConstantPropOptimizer implements Flow.Analysis {
                op.setSrc(q, constOp);
              }
            }
+         } else if (operator instanceof Operator.IntIfCmp) {
+           Operator.IntIfCmp op = (Operator.IntIfCmp) operator;
+           if (op.getSrc1(q) instanceof RegisterOperand) {
+             String operandName = ((RegisterOperand) op.getSrc1(q)).getRegister().toString();
+             SingleCP cp = in[qid].get(operandName);
+             if (cp.isConst()) {
+               IConstOperand constOp = new IConstOperand(cp.getConst());
+               op.setSrc1(q, constOp);
+             }
+           }
+
+           if (op.getSrc2(q) instanceof RegisterOperand) {
+             String operandName = ((RegisterOperand) op.getSrc2(q)).getRegister().toString();
+             SingleCP cp = in[qid].get(operandName);
+             if (cp.isConst()) {
+               IConstOperand constOp = new IConstOperand(cp.getConst());
+               op.setSrc2(q, constOp);
+             }
+           }
          }
        }
     }
