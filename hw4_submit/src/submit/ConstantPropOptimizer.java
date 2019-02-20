@@ -216,12 +216,13 @@ public class ConstantPropOptimizer implements Flow.Analysis {
          Integer qid = q.getID();
          Operator op = q.getOperator();
          if (op instanceof Operator.Binary) {
+           Operator.Binary op = (Operator.Binary) op;
            if (op.getSrc1(q) instanceof RegisterOperand) {
              String operandName = ((RegisterOperand) op.getSrc1(q)).getRegister().toString();
              SingleCP cp = in[qid].get(reg.getRegister().toString());
              if (cp.isConst()) {
                IConstOperand constOp = new IConstOperand(cp.getConst());
-               op.setSrc1(q, constOp);
+               (op.setSrc1(q, constOp);
              }
            }
 
