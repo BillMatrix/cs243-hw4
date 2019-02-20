@@ -213,7 +213,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
 	     QuadIterator qit = new QuadIterator(cfg);
        while (qit.hasNext()) {
          Quad q = qit.next();
-         if (q.getOperator() instanceof NullCheck) {
+         if (q.getOperator() instanceof Operator.NullCheck) {
            Integer qid = q.getID();
            RegisterOperand reg = q.getUsedRegisters().iterator().next();
            if (in[qid].get(reg.getRegister().toString()).isConst()) {
