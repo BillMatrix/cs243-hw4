@@ -214,9 +214,9 @@ public class ConstantPropOptimizer implements Flow.Analysis {
        while (qit.hasNext()) {
          Quad q = qit.next();
          Integer qid = q.getID();
-         Operator op = q.getOperator();
-         if (op instanceof Operator.Binary) {
-           Operator.Binary op = (Operator.Binary) op;
+         Operator operator = q.getOperator();
+         if (operator instanceof Operator.Binary) {
+           Operator.Binary op = (Operator.Binary) operator;
            if (op.getSrc1(q) instanceof RegisterOperand) {
              String operandName = ((RegisterOperand) op.getSrc1(q)).getRegister().toString();
              SingleCP cp = in[qid].get(reg.getRegister().toString());
