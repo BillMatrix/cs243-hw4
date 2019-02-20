@@ -222,7 +222,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
              SingleCP cp = in[qid].get(reg.getRegister().toString());
              if (cp.isConst()) {
                IConstOperand constOp = new IConstOperand(cp.getConst());
-               (op.setSrc1(q, constOp);
+               op.setSrc1(q, constOp);
              }
            }
 
