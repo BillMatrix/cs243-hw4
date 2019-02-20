@@ -213,11 +213,25 @@ public class ConstantPropOptimizer implements Flow.Analysis {
 	     QuadIterator qit = new QuadIterator(cfg);
        while (qit.hasNext()) {
          Quad q = qit.next();
-         if (q.getOperator() instanceof Operator.NullCheck) {
-           Integer qid = q.getID();
-           RegisterOperand reg = q.getUsedRegisters().iterator().next();
-           if (in[qid].get(reg.getRegister().toString()).isConst()) {
-             qit.remove();
+         Integer qid = q.getID();
+         Operator op = q.getOperator();
+         if (op instanceof Binary) {
+           if (op.getSrc1() instanceof RegisterOperand) {
+             String operandName = ((RegisterOperand) op.getSrc1()).getRegister().toString();
+             SingleCP cp = in[qid].get(reg.getRegister().toString());
+             if (cp.isConst()) {
+               IConstOperand constOp = new IConstOperand(cp.getConst());
+               op.setSrc1(constOp);
+             }
+           }
+
+           if (op.getSrc2() instanceof RegisterOperand) {
+             String operandName = ((RegisterOperand) op.getSrc2()).getRegister().toString();
+             SingleCP cp = in[qid].get(reg.getRegister().toString());
+             if (cp.isConst()) {
+               IConstOperand constOp = new IConstOperand(cp.getConst());
+               op.setSrc2(constOp);
+             }
            }
          }
        }
