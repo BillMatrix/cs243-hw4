@@ -219,7 +219,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
            Operator.Binary op = (Operator.Binary) operator;
            if (op.getSrc1(q) instanceof RegisterOperand) {
              String operandName = ((RegisterOperand) op.getSrc1(q)).getRegister().toString();
-             SingleCP cp = in[qid].get(reg.getRegister().toString());
+             SingleCP cp = in[qid].get(operandName);
              if (cp.isConst()) {
                IConstOperand constOp = new IConstOperand(cp.getConst());
                op.setSrc1(q, constOp);
@@ -228,7 +228,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
 
            if (op.getSrc2(q) instanceof RegisterOperand) {
              String operandName = ((RegisterOperand) op.getSrc2(q)).getRegister().toString();
-             SingleCP cp = in[qid].get(reg.getRegister().toString());
+             SingleCP cp = in[qid].get(operandName);
              if (cp.isConst()) {
                IConstOperand constOp = new IConstOperand(cp.getConst());
                op.setSrc2(q, constOp);
