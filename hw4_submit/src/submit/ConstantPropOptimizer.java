@@ -83,7 +83,7 @@ public class ConstantPropOptimizer implements Flow.Analysis {
     }
 
     public static class ConstantPropTable implements Flow.DataflowObject {
-        private SortedMap<String, SingleCP> map;
+        public SortedMap<String, SingleCP> map;
 
         /* 'core' is used to keep track of which variables we need to
          * track */
@@ -215,6 +215,17 @@ public class ConstantPropOptimizer implements Flow.Analysis {
          Quad q = qit.next();
          Integer qid = q.getID();
          Operator operator = q.getOperator();
+	 Boolean hasConst = false;
+	 for (SingleCP cp: in[qid].map.values()) {
+	    if (cp.isConst()) {
+		hasConst = true;
+		break;
+	    }
+	 }
+	 if (hasConst) {
+	    System.out.println(q);
+ 	    System.out.println(in[qid]);
+	 }
          if (operator instanceof Operator.Binary) {
            Operator.Binary op = (Operator.Binary) operator;
            if (op.getSrc1(q) instanceof RegisterOperand) {
